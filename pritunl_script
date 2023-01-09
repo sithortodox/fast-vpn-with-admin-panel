@@ -1,19 +1,24 @@
 #!/bin/bash
-sudo apt update && apt upgrade -y
-sudo apt install curl gnupg2 wget unzip -y
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv E162F504A20CDF15827F718D4B7C549A058F8B6B
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv 7568D9BB55FF9E5287D586017AE645C0CF8E292A
-echo "deb http://repo.pritunl.com/stable/apt focal main" | sudo tee /etc/apt/sources.list.d/pritunl.list
-sudo apt update
-sudo apt install pritunl -y
-sudo systemctl stop pritunl
-sudo systemctl start pritunl
-sudo systemctl enable pritunl
-curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-sudo apt update
-sudo apt-get install mongodb-server -y
+
+KEYSERVER1='hkp://keyserver.ubuntu.com'
+KEYSERVER2='hkp://keyserver.ubuntu.com'
+PRITUNL_REPO='http://repo.pritunl.com/stable/apt'
+MONGODB_REPO='https://repo.mongodb.org/apt/ubuntu'
+
+apt update && apt upgrade -y && apt install curl gnupg2 wget unzip -y
+apt-key adv --keyserver $KEYSERVER1 --recv E162F504A20CDF15827F718D4B7C549A058F8B6B
+apt-key adv --keyserver $KEYSERVER2 --recv 7568D9BB55FF9E5287D586017AE645C0CF8E292A
+echo "deb $PRITUNL_REPO focal main" | tee /etc/apt/sources.list.d/pritunl.list
+apt update
+apt install pritunl -y
+systemctl stop pritunl
+systemctl start pritunl
+systemctl enable pritunl
+curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
+echo "deb [ arch=amd64,arm64 ] $MONGODB_REPO focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+apt update
+apt-get install mongodb-server -y
 echo "Open in your browser https://your-ip/"
-sudo pritunl setup-key
+pritunl setup-key
 echo "Enter this code in the installation form"
 echo "Follow the instructions in the browser"
